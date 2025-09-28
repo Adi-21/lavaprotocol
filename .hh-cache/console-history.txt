@@ -1,0 +1,4 @@
+npx hardhat run scripts/fix_strategy_adapters.js --network citrea
+cd /Users/adi-21/workspace/lavaprotocol
+exit
+npx hardhat run scripts/fix_adapter_permissions.js --network citrea
