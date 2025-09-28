@@ -82,7 +82,7 @@ export const logTransactionError = (error: any) => {
 }
 
 // Validation helpers
-export const validateAmount = (amount: string, minAmount: bigint = 0n): boolean => {
+export const validateAmount = (amount: string, minAmount: bigint = BigInt(0)): boolean => {
   try {
     const parsed = parseBTC(amount)
     return parsed >= minAmount
