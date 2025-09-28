@@ -75,13 +75,14 @@ export function DebugConsole() {
   }
 
   const formatTimestamp = (timestamp: Date) => {
-    return timestamp.toLocaleTimeString('en-US', {
+    const timeString = timestamp.toLocaleTimeString('en-US', {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      fractionalSecondDigits: 3,
     })
+    const milliseconds = timestamp.getMilliseconds().toString().padStart(3, '0')
+    return `${timeString}.${milliseconds}`
   }
 
   if (isMinimized) {

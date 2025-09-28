@@ -375,7 +375,7 @@ export default function CrossChainDashboard() {
                 args: [address!],
                 value,
             })
-            const expectedShares = calculateExpectedShares(depositAmount, totalAssets, totalSupply)
+            const expectedShares = calculateExpectedShares(depositAmount, totalAssets as bigint | undefined, totalSupply as bigint | undefined)
             toast.success(`Deposit sent! Expected: ${expectedShares} pcBTC shares`)
             // refresh
             setTimeout(() => {
@@ -401,7 +401,7 @@ export default function CrossChainDashboard() {
                 args: [address!],
                 value,
             })
-            const expectedSharesCross = calculateExpectedShares(depositAmountCross, crossTotalAssets, crossTotalSupply)
+            const expectedSharesCross = calculateExpectedShares(depositAmountCross, crossTotalAssets as bigint | undefined, crossTotalSupply as bigint | undefined)
             toast.success(`Cross-chain deposit sent! Expected: ${expectedSharesCross} xcBTC shares`)
         } catch (e: any) {
             toast.error(e?.shortMessage || 'Cross-chain deposit failed')
@@ -444,17 +444,17 @@ export default function CrossChainDashboard() {
             console.log('  - Reserve BPS:', reserveBps?.toString())
 
             // Calculate expected withdrawal amount
-            const expectedAssets = userShares && totalSupply && totalAssets && totalSupply > 0n
-                ? (userShares * totalAssets) / totalSupply
-                : 0n
+            const expectedAssets = userShares && totalSupply && totalAssets && (totalSupply as bigint) > BigInt(0)
+                ? ((userShares as bigint) * (totalAssets as bigint)) / (totalSupply as bigint)
+                : BigInt(0)
             console.log('💰 Expected withdrawal:')
             console.log('  - Expected assets (raw):', expectedAssets?.toString())
             console.log('  - Expected assets (formatted):', formatBTC(Number(expectedAssets || 0), 8))
 
             // Check if vault has enough balance  
             const reserveAmount = totalAssets && reserveBps
-                ? (totalAssets * BigInt(reserveBps)) / 10000n
-                : 0n
+                ? ((totalAssets as bigint) * BigInt(reserveBps as number)) / BigInt(10000)
+                : BigInt(0)
             console.log('🏦 Balance Analysis:')
             console.log('  - Reserve amount:', reserveAmount.toString())
             console.log('  - Need from strategies:', expectedAssets && reserveAmount && expectedAssets > reserveAmount ? (expectedAssets - reserveAmount).toString() : '0')
@@ -483,7 +483,7 @@ export default function CrossChainDashboard() {
                 abi: portfolioAbi as any,
                 functionName: 'withdraw',
                 args: [shares, address!],
-                gas: 2000000n, // High gas limit for complex withdrawals
+                gas: BigInt(2000000), // High gas limit for complex withdrawals
             })
 
             console.log('✅ Portfolio withdrawal transaction submitted successfully')
@@ -539,9 +539,9 @@ export default function CrossChainDashboard() {
             console.log('  - Total supply:', crossTotalSupply?.toString())
 
             // Calculate expected withdrawal amount
-            const expectedAssetsCross = userSharesCross && crossTotalSupply && crossTotalAssets && crossTotalSupply > 0n
-                ? (userSharesCross * crossTotalAssets) / crossTotalSupply
-                : 0n
+            const expectedAssetsCross = userSharesCross && crossTotalSupply && crossTotalAssets && (crossTotalSupply as bigint) > BigInt(0)
+                ? ((userSharesCross as bigint) * (crossTotalAssets as bigint)) / (crossTotalSupply as bigint)
+                : BigInt(0)
             console.log('💰 Expected withdrawal:')
             console.log('  - Expected assets (raw):', expectedAssetsCross?.toString())
             console.log('  - Expected assets (formatted):', formatBTC(Number(expectedAssetsCross || 0), 8))
@@ -556,7 +556,7 @@ export default function CrossChainDashboard() {
                 abi: crossAbi as any,
                 functionName: 'withdraw',
                 args: [shares, address!],
-                gas: 2000000n, // High gas limit for complex withdrawals
+                gas: BigInt(2000000), // High gas limit for complex withdrawals
             })
 
             console.log('✅ Cross-chain withdrawal transaction submitted successfully')
@@ -692,7 +692,7 @@ export default function CrossChainDashboard() {
                                             if (!isConnected) return toast.error('Connect wallet')
                                             const totalSupplyNum = Number(totalSupply || 0)
                                             const shares25pct = BigInt(Math.floor(totalSupplyNum * 25 / 100))
-                                            if (shares25pct === 0n) return toast.error('No shares to withdraw')
+                                            if (shares25pct === BigInt(0)) return toast.error('No shares to withdraw')
 
                                             try {
                                                 setBusy('withdraw')
@@ -701,7 +701,7 @@ export default function CrossChainDashboard() {
                                                     abi: portfolioAbi as any,
                                                     functionName: 'withdraw',
                                                     args: [shares25pct, address!],
-                                                    gas: 2000000n,
+                                                    gas: BigInt(2000000),
                                                 })
                                                 toast.success('25% withdrawal sent')
                                                 setTimeout(() => {
